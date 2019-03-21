@@ -1,1 +1,1 @@
-web: gunicorn pet_pals.app:app
+web: gunicorn biodiv-belly-button-app.app:app
