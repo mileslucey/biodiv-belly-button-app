@@ -1,29 +1,69 @@
 function buildMetadata(sample) {
 
   // @TODO: Complete the following function that builds the metadata panel
-
   // Use `d3.json` to fetch the metadata for a sample
-    // Use d3 to select the panel with id of `#sample-metadata`
-
-    // Use `.html("") to clear any existing metadata
-
+    var metaurl = "/metadata/${sample}"
+    d3.json(metaurl).then(function(response){
+        console.log(response);
+    // Use d3 to select the panel with id of `#sample-metadata`        
+        var sampleMetaData = d3.select("#sample-metadata")
+    // Use `.html("") to clear any existing metadata        
+        sampleMetaData.html("")
     // Use `Object.entries` to add each key and value pair to the panel
-    // Hint: Inside the loop, you will need to use d3 to append new
-    // tags for each key-value in the metadata.
-
-    // BONUS: Build the Gauge Chart
-    // buildGauge(data.WFREQ);
+    // Hint: Inside the loop, you will need to use d3 to append new        
+        Object.entries(response).forEach(([key,value]) => {
+            var p = sampleMetaData.append("p");
+      // tags for each key-value in the metadata.
+            p.text("${key}: ${value}");    
+        });
+    });
 }
 
 function buildCharts(sample) {
+  var plotURL = `/samples/${sample}`;
+  d3.json(plotURL).then(function(response){
+    console.log(response);
 
-  // @TODO: Use `d3.json` to fetch the sample data for the plots
+    var otu_ids = response['otu_ids'];
+    var sample_values = response['sample_values'];
+    var otu_labels = response['otu_labels'];
+    var otu_ids_10 = otu_ids.slice(0,10);
+    var sample_values_10 = sample_values.slice(0,10);
+    var otu_labels_10 = otu_labels.slice(0,10);
 
-    // @TODO: Build a Bubble Chart using the sample data
+    var trace_scatter = { 
+      type: "scatter",
+      mode: "markers",
+      x: otu_ids,
+      y: sample_values,
+      marker: {size: sample_values,
+                color: otu_ids},
+      text: otu_labels,
+      hoverinfo: "x+y+text",
+      textinfo: "none"
+    };
+    var data_scatter = [trace_scatter];
 
-    // @TODO: Build a Pie Chart
-    // HINT: You will need to use slice() to grab the top 10 sample_values,
-    // otu_ids, and labels (10 each).
+    var layout = {
+      showlegend: false,
+      xaxis: {title: "OTU ID"},
+      yaxis: {title: "Sample Values"}
+    };
+
+    Plotly.newPlot("bubble", data_scatter, layout);
+
+    var trace_pie = {
+      type: "pie",
+      values: sample_values_10, 
+      labels: otu_ids_10, 
+      text: otu_labels_10,
+      hoverinfo: "label+text+value+percent",
+      textinfo: "percent",
+    };
+    var data_pie = [trace_pie];
+
+    Plotly.newPlot("pie", data_pie);
+  });
 }
 
 function init() {
