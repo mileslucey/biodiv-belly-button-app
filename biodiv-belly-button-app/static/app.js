@@ -4,40 +4,39 @@ function buildMetadata(sample) {
   // Use `d3.json` to fetch the metadata for a sample
     var metaurl = "/metadata/${sample}"
     d3.json(metaurl).then(function(response){
-        console.log(response);
     // Use d3 to select the panel with id of `#sample-metadata`        
-        var sampleMetaData = d3.select("#sample-metadata")
+        var sample_metadata = d3.select("#sample-metadata");
     // Use `.html("") to clear any existing metadata        
-        sampleMetaData.html("")
+        sample_metadata.html("");
     // Use `Object.entries` to add each key and value pair to the panel
     // Hint: Inside the loop, you will need to use d3 to append new        
-        Object.entries(response).forEach(([key,value]) => {
-            var p = sampleMetaData.append("p");
+        Object.entries(response).forEach(function([key,value]) {
+            var row = sample_metadata.append("p");
       // tags for each key-value in the metadata.
-            p.text("${key}: ${value}");    
+            row.text("${key}: ${value}");    
         });
     });
-}
+};
 
 function buildCharts(sample) {
+//    use d3.JSON to fetch sample data for plots
   var plotURL = `/samples/${sample}`;
   d3.json(plotURL).then(function(response){
-    console.log(response);
 
     var otu_ids = response['otu_ids'];
     var sample_values = response['sample_values'];
     var otu_labels = response['otu_labels'];
-    var otu_ids_10 = otu_ids.slice(0,10);
-    var sample_values_10 = sample_values.slice(0,10);
-    var otu_labels_10 = otu_labels.slice(0,10);
+    var pie_labels = otu_ids.slice(0,10);
+    var pie_values = sample_values.slice(0,10);
+    var pie_text = otu_labels.slice(0,10);
 
     var trace_scatter = { 
       type: "scatter",
       mode: "markers",
       x: otu_ids,
       y: sample_values,
-      marker: {size: sample_values,
-                color: otu_ids},
+      marker: {size: m_size,
+                color: m_colors},
       text: otu_labels,
       hoverinfo: "x+\ny+\ntext",
       textinfo: "none"
@@ -51,12 +50,12 @@ function buildCharts(sample) {
     };
 
     Plotly.newPlot("bubble", data_scatter, layout);
-
+//build a pie chart
     var trace_pie = {
       type: "pie",
-      values: sample_values_10, 
-      labels: otu_ids_10, 
-      text: otu_labels_10,
+      values: pie_values, 
+      labels: pie_labels, 
+      text: pie_text,
       hoverinfo: "label+\ntext+\nvalue+\npercent",
       textinfo: "percent",
     };
