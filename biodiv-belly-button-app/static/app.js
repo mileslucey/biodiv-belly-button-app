@@ -57,7 +57,7 @@ function buildCharts(sample) {
       values: sample_values_10, 
       labels: otu_ids_10, 
       text: otu_labels_10,
-      hoverinfo: "label+text+value+percent",
+      hoverinfo: "label+\ntext+\nvalue+\npercent",
       textinfo: "percent",
     };
     var data_pie = [trace_pie];
