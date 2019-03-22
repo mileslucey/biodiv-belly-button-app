@@ -39,7 +39,7 @@ function buildCharts(sample) {
       marker: {size: sample_values,
                 color: otu_ids},
       text: otu_labels,
-      hoverinfo: "x+y+text",
+      hoverinfo: "x+\ny+\ntext",
       textinfo: "none"
     };
     var data_scatter = [trace_scatter];
