@@ -43,7 +43,7 @@ function buildCharts(sample) {
       mode: 'markers',
       marker: {
         color: m_colors,
-        size: m_size
+        size: 10
       } 
     };
   
