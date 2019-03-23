@@ -1,1 +1,1 @@
-web: gunicorn biodiv-belly-button-app.app:app
+web: gunicorn app:app
